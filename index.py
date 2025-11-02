@@ -1,4 +1,4 @@
-# %%
+# %% 
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -18,86 +18,50 @@ pd.set_option('display.max_columns', None)
 import warnings
 warnings.filterwarnings("ignore")
 
-sns.set_theme(context='notebook', palette='muted', style='whitegrid')
-
+sns.set_theme(context='notebook', palette='muted', style='darkgrid')
 
 
 # %%
+# Đọc dữ liệu từ file CSV
 df = pd.read_csv('data/alzheimers_disease_data.csv')
 df.head().T
-
-
-palette_dict = {
-    'Gender': {'Male': "#00bfff", 'Female': '#55efc4'},
-    'Smoking': {'Yes': '#00bfff', 'No': '#55efc4'},
-    'FamilyHistoryAlzheimers': {'Yes': '#00bfff', 'No': '#55efc4'},
-    'CardiovascularDisease': {'Yes': '#00bfff', 'No': '#55efc4'},
-    'Diabetes': {'Yes': '#00bfff', 'No': '#55efc4'},
-    'Depression': {'Yes': '#00bfff', 'No': '#55efc4'},
-    'HeadInjury': {'Yes': '#00bfff', 'No': '#55efc4'},
-    'Hypertension': {'Yes': '#00bfff', 'No': '#55efc4'},
-    'MemoryComplaints': {'Yes': '#00bfff', 'No': '#55efc4'},
-    'BehavioralProblems': {'Yes': '#00bfff', 'No': '#55efc4'},
-    'Confusion': {'Yes': '#00bfff', 'No': '#55efc4'},
-    'Disorientation': {'Yes': '#00bfff', 'No': '#55efc4'},
-    'PersonalityChanges': {'Yes': '#00bfff', 'No': '#55efc4'},
-    'DifficultyCompletingTasks': {'Yes': '#00bfff', 'No': '#55efc4'},
-    'Forgetfulness': {'Yes': '#00bfff', 'No': '#55efc4'},
-    'EducationLevel': {
-        'None': "#ffae00",
-        'High School': "#fa7000",
-        "Bachelor's": "#fff311ff",
-        'Higher': "#f80000"
-    },
-    'Ethnicity': {
-        'Caucasian': "#87d7ff",
-        'African American': "#0088ff",
-        'Asian': "#005de9",
-        'Other': "#00c8ff"
-    }
-}
 
 
 # %%
 df.head()
 
-
 # %%
 df.info()
 
-
-
 # %%
 df.describe().T
-
 
 # %%
 # Đếm số dòng trùng lặp (duplicate rows)
 sum(df.duplicated())
 
 # %%
-# Đếm số lần xuất hiện của mỗi giá trị duy nhất trong cột 'DoctorInCharge'
+# Đếm số lần xuất hiện của mỗi giá trị trong cột 'DoctorInCharge'
 df.DoctorInCharge.value_counts()
 
-
 # %%
-# Xóa các cột không cần thiết khỏi DataFrame
+# Xóa các cột không cần thiết
 df.drop(['PatientID', 'DoctorInCharge'], axis=1, inplace=True)
 
 
+# -------------------------------------------------------------
+# PHÂN TÍCH DỮ LIỆU
+# -------------------------------------------------------------
 
-
-# Phân tích Dữ Liệu 
 # %%
-# Xác định các cột số: các cột có hơn 10 giá trị unique được coi là numerical
+# Xác định các cột số (numerical): có hơn 10 giá trị khác nhau
 numerical_columns = [col for col in df.columns if df[col].nunique() > 10]
 
-# Xác định các cột phân loại (categorical): các cột không phải là numerical và không phải là 'Diagnosis'
+# Xác định các cột phân loại (categorical): không nằm trong numerical và không phải cột 'Diagnosis'
 categorical_columns = df.columns.difference(numerical_columns).difference(['Diagnosis']).to_list()
 
 
-# Phân phối các tính năng phân loại
-# Lập nhãn 
+# Tạo nhãn hiển thị cho các giá trị phân loại
 custom_labels = {
     'Gender': ['Male', 'Female'],
     'Ethnicity': ['Caucasian', 'African American', 'Asian', 'Other'],
@@ -118,49 +82,26 @@ custom_labels = {
     'Forgetfulness': ['No', 'Yes']
 }
 
-
-
-# Plot countplots 
-for col, labels in custom_labels.items():
-    if col in df.columns:
-        unique_vals = sorted(df[col].unique())
-        if len(unique_vals) == len(labels):
-            df[col] = df[col].map({v: lbl for v, lbl in zip(unique_vals, labels)})
-        
+# %%
+# Vẽ biểu đồ countplot cho các cột phân loại
 for column in categorical_columns:
     plt.figure(figsize=(8, 5))
-    # sns.countplot(data=df, x=column, palette=palette_dict[column])
-    # plt.title(f'Countplot of {column}')
+    sns.countplot(data=df, x=column)
+    plt.title(f'Countplot of {column}')
     
-    # # Directly set custom labels
-    # labels = custom_labels[column]
-    # ticks = range(len(labels))
-    # plt.xticks(ticks=ticks, labels=labels)
+    # Thiết lập nhãn hiển thị (ví dụ: Yes / No)
+    labels = custom_labels[column]
+    ticks = range(len(labels))
+    plt.xticks(ticks=ticks, labels=labels)
     
-    # plt.show()
-    
-    palette = palette_dict.get(column, "muted")
-
-    sns.countplot(data=df, x=column, palette=palette)
-    plt.title(f'Countplot of {column}', fontsize=14, fontweight='bold', color='#2c3e50')
-    plt.xlabel(column, fontsize=12)
-    plt.ylabel('Count', fontsize=12)
-    
-    labels = custom_labels.get(column)
-    if labels:
-        plt.xticks(ticks=range(len(labels)), labels=labels, rotation=15)
-    else:
-        plt.xticks(rotation=15)
-    
-    plt.tight_layout()
     plt.show()
 
 
+# -------------------------------------------------------------
+# PHÂN PHỐI CÁC THUỘC TÍNH DẠNG SỐ
+# -------------------------------------------------------------
 
 # %%
-# Phân phối các tính năng numerical
-
-# Plot histogram 
 for column in numerical_columns:
     plt.figure(figsize=(8, 5))
     sns.histplot(data=df, x=column, kde=True, bins=20)
@@ -168,113 +109,104 @@ for column in numerical_columns:
     plt.show()
     
     
-    
-    
-    
-# Sự tương quan giữa các tính năng
+# -------------------------------------------------------------
+# MA TRẬN TƯƠNG QUAN GIỮA CÁC ĐẶC TRƯNG
+# -------------------------------------------------------------
 
 # %%
-# Tạo mask
 mask = np.triu(np.ones_like(df.corr(), dtype=bool))
 
-# Plot heatmap of the correlation matrix
 plt.figure(figsize=(12, 10))
-sns.heatmap(df.corr(),cmap="coolwarm", cbar_kws={"shrink": .5}, mask=mask)
-
+sns.heatmap(df.corr(), cmap="coolwarm", cbar_kws={"shrink": .5}, mask=mask)
 plt.show()
 
 
-
 # %%
-# Tính hệ số tương quan Pearson
+# Tính hệ số tương quan Pearson với biến mục tiêu (Diagnosis)
 correlations = df.corr(numeric_only=True)['Diagnosis'][:-1].sort_values()
 
 plt.figure(figsize=(20, 7))
-
-# Tạo biểu đồ thanh của hệ số tương quan Pearson
 ax = correlations.plot(kind='bar', width=0.7)
-
-# Đặt giới hạn và nhãn trục y
-ax.set(ylim=[-1, 1], ylabel='Pearson Correlation', xlabel='Features', 
-        title='Pearson Correlation with Diagnosis')
-
-# Rotate x-axis labels for better readability
+ax.set(ylim=[-1, 1], ylabel='Hệ số tương quan Pearson', xlabel='Đặc trưng', 
+        title='Tương quan giữa các đặc trưng và Diagnosis')
 ax.set_xticklabels(correlations.index, rotation=45, ha='right')
-
 plt.tight_layout()
 plt.show()
 
 
-
-# Phân phối target feature
+# -------------------------------------------------------------
+# PHÂN PHỐI NHÃN ĐÍCH (Diagnosis)
+# -------------------------------------------------------------
 
 # %%
-# Xác định các loại  Response categories và count occurences
 categories = [0, 1]
 counts = df.Diagnosis.value_counts().tolist()
 
-
-
 colors = sns.color_palette("muted")
 
-# Plot the pie chart 
 plt.figure(figsize=(6, 6))
 plt.pie(counts, labels=categories, autopct='%1.1f%%', startangle=140, colors=colors)
-plt.title('Diagnosis Distribution')
+plt.title('Phân bố Diagnosis')
 plt.show()
 
 
-
-
-# Data Preprocessing
+# -------------------------------------------------------------
+# TIỀN XỬ LÝ DỮ LIỆU
+# -------------------------------------------------------------
 
 # %%
+# Hiển thị toàn bộ dữ liệu
 df
 
-
 # %%
-#Giá trị Unique
+# Hiển thị các giá trị duy nhất trong từng cột
 for column in df.columns:
     unique_values = df[column].unique()
-    print(f"Unique values in column '{column}':")
+    print(f"Các giá trị duy nhất trong cột '{column}':")
     print(unique_values)
     print()
     
-    
 # %%
-columns = ['Age', 'BMI', 'AlcoholConsumption', 'PhysicalActivity', 'DietQuality', 'SleepQuality', 'SystolicBP', 'DiastolicBP', 'CholesterolTotal', 'CholesterolLDL', 'CholesterolHDL', 'CholesterolTriglycerides', 'MMSE', 'FunctionalAssessment', 'ADL']
+# Danh sách các cột dạng số cần chuẩn hóa
+columns = ['Age', 'BMI', 'AlcoholConsumption', 'PhysicalActivity', 'DietQuality', 'SleepQuality', 
+           'SystolicBP', 'DiastolicBP', 'CholesterolTotal', 'CholesterolLDL', 'CholesterolHDL', 
+           'CholesterolTriglycerides', 'MMSE', 'FunctionalAssessment', 'ADL']
 
-#normalize các cột
+# Chuẩn hóa (0–1)
 min_max_scaler = MinMaxScaler()
 df[columns] = min_max_scaler.fit_transform(df[columns])
 
-#standardize các cột
+# Chuẩn hóa về phân phối chuẩn (Z-score)
 standard_scaler = StandardScaler()
 df[columns] = standard_scaler.fit_transform(df[columns])
 
 
 # %%
+# Mã hóa one-hot cho cột 'Ethnicity'
 ethnicity_encoded = pd.get_dummies(df['Ethnicity'], prefix='Ethnicity')
 
-# Nối đặc trưng mới vào df và bỏ cột cũ 'Ethnicity'
+# Gộp lại vào DataFrame và loại bỏ cột gốc
 df = pd.concat([df.drop(columns=['Ethnicity']), ethnicity_encoded], axis=1)
-
 
 # %%
 df
 
 
-# Modeling
+# -------------------------------------------------------------
+# MÔ HÌNH HÓA (MODELING)
+# -------------------------------------------------------------
 
 # %%
-#chia dữ liệu thành các feature và target
-X = df.drop(columns = ['Diagnosis'])
+# Tách dữ liệu thành đặc trưng (X) và nhãn (y)
+X = df.drop(columns=['Diagnosis'])
 y = df['Diagnosis']
 
-#chia dữ liệu thành các tập huấn luyện và thử nghiệm
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 42, shuffle = True)
+# Chia dữ liệu thành tập huấn luyện và kiểm tra
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42, shuffle=True
+)
 
-#xác định hyperparameter grids 
+# Định nghĩa lưới tham số (hyperparameter grid) cho từng mô hình
 param_grids = {
     'Decision Tree': {'max_depth': [3, 5, 7, 12, None]},
     'K-Nearest Neighbors': {'n_neighbors': [3, 5, 7]},
@@ -282,7 +214,7 @@ param_grids = {
     'Support Vector Machine': {'C': [0.1, 1, 10], 'gamma': [0.1, 1, 'scale', 'auto']},
 }
 
-#khởi tạo model
+# Khởi tạo các mô hình phân loại
 models = {
     'Decision Tree': DecisionTreeClassifier(),
     'K-Nearest Neighbors': KNeighborsClassifier(),
@@ -290,11 +222,13 @@ models = {
     'Support Vector Machine': SVC(),
 }
 
-#fit models 
+# Huấn luyện mô hình và tinh chỉnh siêu tham số bằng GridSearchCV
 for name, model in models.items():
-    grid_search = GridSearchCV(model, param_grids[name], cv = 5, scoring = 'accuracy')
+    grid_search = GridSearchCV(model, param_grids[name], cv=5, scoring='accuracy')
     grid_search.fit(X_train, y_train)
     best_model = grid_search.best_estimator_
     y_pred = best_model.predict(X_test)
     report = classification_report(y_test, y_pred)
-    print(f'{name} Classification Report:\n{report}\nBest Parameters: {grid_search.best_params_}\n')
+    print(f'{name} – Báo cáo phân loại:\n{report}\nThông số tốt nhất: {grid_search.best_params_}\n')
+
+# %%
