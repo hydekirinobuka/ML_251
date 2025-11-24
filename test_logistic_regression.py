@@ -98,8 +98,8 @@ df.drop(['PatientID', 'DoctorInCharge'], axis=1, inplace=True)
 
 # Chuẩn hóa các cột số
 columns = ['Age', 'BMI', 'AlcoholConsumption', 'PhysicalActivity', 'DietQuality', 'SleepQuality', 
-           'SystolicBP', 'DiastolicBP', 'CholesterolTotal', 'CholesterolLDL', 'CholesterolHDL', 
-           'CholesterolTriglycerides', 'MMSE', 'FunctionalAssessment', 'ADL']
+            'SystolicBP', 'DiastolicBP', 'CholesterolTotal', 'CholesterolLDL', 'CholesterolHDL', 
+            'CholesterolTriglycerides', 'MMSE', 'FunctionalAssessment', 'ADL']
 
 min_max_scaler = MinMaxScaler()
 df[columns] = min_max_scaler.fit_transform(df[columns])

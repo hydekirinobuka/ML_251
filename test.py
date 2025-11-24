@@ -101,30 +101,30 @@ warnings.filterwarnings("ignore")
 sns.set_theme(context='notebook', palette='muted', style='darkgrid')
 
 
-# %%
+
 # Đọc dữ liệu từ file CSV
 df = pd.read_csv('data/alzheimers_disease_data.csv')
 df.head().T
 
 
-# %%
+
 df.head()
 
-# %%
+
 df.info()
 
-# %%
+
 df.describe().T
 
-# %%
+
 # Đếm số dòng trùng lặp (duplicate rows)
 sum(df.duplicated())
 
-# %%
+
 # Đếm số lần xuất hiện của mỗi giá trị trong cột 'DoctorInCharge'
 df.DoctorInCharge.value_counts()
 
-# %%
+
 # Xóa các cột không cần thiết
 df.drop(['PatientID', 'DoctorInCharge'], axis=1, inplace=True)
 
@@ -133,7 +133,7 @@ df.drop(['PatientID', 'DoctorInCharge'], axis=1, inplace=True)
 # PHÂN TÍCH DỮ LIỆU
 # -------------------------------------------------------------
 
-# %%
+
 # Xác định các cột số (numerical): có hơn 10 giá trị khác nhau
 numerical_columns = [col for col in df.columns if df[col].nunique() > 10]
 
@@ -162,7 +162,7 @@ custom_labels = {
     'Forgetfulness': ['No', 'Yes']
 }
 
-# %%
+
 # Vẽ biểu đồ countplot cho các cột phân loại
 for column in categorical_columns:
     plt.figure(figsize=(8, 5))
@@ -181,7 +181,7 @@ for column in categorical_columns:
 # PHÂN PHỐI CÁC THUỘC TÍNH DẠNG SỐ
 # -------------------------------------------------------------
 
-# %%
+
 for column in numerical_columns:
     plt.figure(figsize=(8, 5))
     sns.histplot(data=df, x=column, kde=True, bins=20)
@@ -193,7 +193,7 @@ for column in numerical_columns:
 # MA TRẬN TƯƠNG QUAN GIỮA CÁC ĐẶC TRƯNG
 # -------------------------------------------------------------
 
-# %%
+
 mask = np.triu(np.ones_like(df.corr(), dtype=bool))
 
 plt.figure(figsize=(12, 10))
@@ -201,7 +201,7 @@ sns.heatmap(df.corr(), cmap="coolwarm", cbar_kws={"shrink": .5}, mask=mask)
 plt.show()
 
 
-# %%
+
 # Tính hệ số tương quan Pearson với biến mục tiêu (Diagnosis)
 correlations = df.corr(numeric_only=True)['Diagnosis'][:-1].sort_values()
 
@@ -218,7 +218,7 @@ plt.show()
 # PHÂN PHỐI NHÃN ĐÍCH (Diagnosis)
 # -------------------------------------------------------------
 
-# %%
+
 categories = [0, 1]
 counts = df.Diagnosis.value_counts().tolist()
 
@@ -234,11 +234,11 @@ plt.show()
 # TIỀN XỬ LÝ DỮ LIỆU
 # -------------------------------------------------------------
 
-# %%
+
 # Hiển thị toàn bộ dữ liệu
 df
 
-# %%
+
 # Hiển thị các giá trị duy nhất trong từng cột
 for column in df.columns:
     unique_values = df[column].unique()
@@ -246,7 +246,7 @@ for column in df.columns:
     print(unique_values)
     print()
     
-# %%
+
 # Danh sách các cột dạng số cần chuẩn hóa
 columns = ['Age', 'BMI', 'AlcoholConsumption', 'PhysicalActivity', 'DietQuality', 'SleepQuality', 
             'SystolicBP', 'DiastolicBP', 'CholesterolTotal', 'CholesterolLDL', 'CholesterolHDL', 
@@ -261,14 +261,14 @@ standard_scaler = StandardScaler()
 df[columns] = standard_scaler.fit_transform(df[columns])
 
 
-# %%
+
 # Mã hóa one-hot cho cột 'Ethnicity'
 ethnicity_encoded = pd.get_dummies(df['Ethnicity'], prefix='Ethnicity')
 
 # Gộp lại vào DataFrame và loại bỏ cột gốc
 df = pd.concat([df.drop(columns=['Ethnicity']), ethnicity_encoded], axis=1)
 
-# %%
+
 df
 
 
@@ -276,7 +276,7 @@ df
 # MÔ HÌNH HÓA (MODELING)
 # -------------------------------------------------------------
 
-# %%
+
 # Tách dữ liệu thành đặc trưng (X) và nhãn (y)
 X = df.drop(columns=['Diagnosis'])
 y = df['Diagnosis']
@@ -302,9 +302,10 @@ models = {
     'Support Vector Machine': SVC(),
 }
 
+#%%
 # Huấn luyện mô hình và tinh chỉnh siêu tham số bằng GridSearchCV
 
-# %%
+
 # Decision Tree
 dt_grid = GridSearchCV(DecisionTreeClassifier(), param_grids['Decision Tree'], cv=5, scoring='accuracy')
 dt_grid.fit(X_train, y_train)
@@ -320,7 +321,7 @@ plt.title("Confusion Matrix - Decision Tree")
 plt.savefig("latex/assets/confusion_matrix_decisiontree.png", dpi=300, bbox_inches='tight')
 plt.close()
 
-# %%
+
 # KNN: accuracy theo từng K (1-15)
 knn_acc_list = []
 knn_k_list = list(range(1, 16))
@@ -346,7 +347,7 @@ plt.title('Độ chính xác KNN theo số lượng K')
 plt.savefig('latex/assets/knn_k_vs_accuracy.png', dpi=300, bbox_inches='tight')
 plt.close()
 
-# %%
+
 # Logistic Regression
 logreg_grid = GridSearchCV(LogisticRegression(), param_grids['Logistic Regression'], cv=5, scoring='accuracy')
 logreg_grid.fit(X_train, y_train)
@@ -367,7 +368,7 @@ plt.tight_layout()
 plt.savefig('latex/assets/logreg_coefficients.png', dpi=300, bbox_inches='tight')
 plt.close()
 
-# %%
+
 # SVM: so sánh accuracy các kernel
 svm_acc_list = []
 svm_kernel_names = ['linear', 'rbf']
@@ -389,9 +390,9 @@ plt.title('So sánh accuracy SVM với các kernel')
 plt.savefig('latex/assets/svm_kernel_compare.png', dpi=300, bbox_inches='tight')
 plt.close()
 
-# %%
+
 # Lưu số liệu ra file txt để đối chiếu
-with open('latex/assets/model_metrics.txt', 'w', encoding='utf-8') as f:
+with open('result.txt', 'w', encoding='utf-8') as f:
     f.write(f"Decision Tree: accuracy={dt_acc:.3f}, recall={dt_recall:.3f}, specificity={dt_specificity:.3f}\n")
     f.write(f"KNN (best k={knn_best_k}): accuracy={knn_acc:.3f}, recall={knn_recall:.3f}, specificity={knn_specificity:.3f}\n")
     f.write(f"KNN acc list: {[round(a,3) for a in knn_acc_list]}\n")
@@ -401,11 +402,24 @@ with open('latex/assets/model_metrics.txt', 'w', encoding='utf-8') as f:
         f.write(f"SVM ({kernel}): accuracy={r['acc']:.3f}, recall={r['recall']:.3f}, specificity={r['specificity']:.3f}\n")
 
 
+# %%
+#fit models using GridSearchCV for hyperparameter tuning
+for name, model in models.items():
+    grid_search = GridSearchCV(model, param_grids[name], cv = 5, scoring = 'accuracy')
+    grid_search.fit(X_train, y_train)
+    best_model = grid_search.best_estimator_
+    y_pred = best_model.predict(X_test)
+    report = classification_report(y_test, y_pred)
+    print(f'{name} Classification Report:\n{report}\nBest Parameters: {grid_search.best_params_}\n')
+
+
+
+# %%
 # -------------------------------------------------------------
 # TEST CHI TIẾT LOGISTIC REGRESSION VỚI CÁC THAM SỐ KHÁC NHAU
 # -------------------------------------------------------------
 
-# %%
+
 print("\n" + "=" * 70)
 print("TEST CHI TIẾT LOGISTIC REGRESSION VỚI CÁC CẤU HÌNH KHÁC NHAU")
 print("=" * 70)
@@ -475,3 +489,4 @@ print(f"Recall: {best_result['recall']:.4f}")
 print(f"Specificity: {best_result['specificity']:.4f}")
 
 print("\n✓ Hoàn tất phân tích và đánh giá mô hình!")
+# %%
