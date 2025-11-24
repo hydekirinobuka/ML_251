@@ -1,0 +1,296 @@
+\documentclass[12pt]{extarticle}
+\usepackage{a4wide,amssymb,epsfig,latexsym,multicol,array,hhline,fancyhdr}
+\usepackage{comment}
+\usepackage{amsmath}
+\usepackage{changepage}
+\usepackage{afterpage}
+\usepackage{amsfonts}
+\usepackage[utf8]{vntex}
+\usepackage{framed}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{lastpage}
+\usepackage[lined,boxed,commentsnumbered]{algorithm2e}
+\usepackage{enumerate}
+\usepackage{tcolorbox}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{tabularx}
+\usepackage{color}
+\usepackage{graphicx}	
+\usepackage{pbox}      % Cần thiết để sử dụng \pbox
+\usepackage{amsmath}   % Cần thiết cho các kiểu toán học% Standard graphics package
+\usepackage{array}
+\usepackage{tabularx, caption}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{rotating}
+\usepackage{ulem}
+\usepackage{graphics}
+\usepackage{adjustbox}
+\usepackage{etoolbox}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage{subfig}
+\usepackage{epsfig}
+\usepackage{tcolorbox}
+\usepackage{tikz}
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage{subcaption} % Gói hỗ trợ chú thích con
+\usepackage{float}
+%\usepackage[
+%   sorting=none, 
+%	backend=biber,
+%	style=alphabetic,
+%]{biblatex}
+%\addbibresource{reference.bib}
+\usetikzlibrary{arrows,snakes,backgrounds}
+\usepackage{hyperref}
+\hypersetup{urlcolor=blue,linkcolor=blue,citecolor=blue,colorlinks=true} 
+%\usepackage{pstcol} 								% PSTricks with the standard color package
+% --- preamble additions ---
+\usepackage{tabularx}    % bảng co giãn
+\usepackage{ltablex}     % nếu cần multi-page tables (uncomment keepXColumns below)
+\usepackage{array}
+\usepackage{adjustbox}   % scale / center rộng bảng
+\usepackage{booktabs}
+\usepackage{caption}
+
+% nếu dùng ltablex và muốn giữ X giống tabularx:
+\keepXColumns
+
+% định nghĩa cột X dạng ragged-right để tránh justify trong ô
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}
+
+% một chút cấu hình để giảm underfull/overfull
+\hyphenpenalty=500
+\tolerance=1000
+\emergencystretch=1.5em
+
+\newtheorem{theorem}{{\bf Theorem}}
+\newtheorem{property}{{\bf Property}}
+\newtheorem{proposition}{{\bf Proposition}}
+\newtheorem{corollary}[proposition]{{\bf Corollary}}
+\newtheorem{lemma}[proposition]{{\bf Lemma}}
+
+% \AtBeginDocument{\renewcommand*\contentsname{Contents}}
+% \AtBeginDocument{\renewcommand*\refname{References}}
+%\usepackage{fancyhdr}
+\setlength{\headheight}{40pt}
+\pagestyle{fancy}
+\fancyhead{} % clear all header fields
+\fancyhead[L]{
+	\begin{tabular}{rl}
+		\begin{picture}(25,15)(0,0)
+			\put(0,-8){\includegraphics[width=8mm, height=8mm]{hcmut.png}}
+			%\put(0,-8){\epsfig{width=10mm,figure=hcmut.eps}}
+		\end{picture}&
+		%\includegraphics[width=8mm, height=8mm]{hcmut.png} & %
+		\begin{tabular}{l}
+	\textbf{\ttfamily \color{blue} Trường Đại học Bách Khoa - Đại học Quốc gia TP. Hồ Chí Minh}\\
+	\textbf{\ttfamily \color{blue} Khoa Khoa học và Kỹ thuật Máy tính}
+\end{tabular}
+
+	\end{tabular}
+}
+\fancyhead[R]{
+	\begin{tabular}{l}
+		\tiny \bf \\
+		\tiny \bf 
+\end{tabular}  }
+\fancyfoot{} % clear all footer fields
+\fancyfoot[L]{\small \ttfamily Học Máy - HK251}
+\fancyfoot[R]{\small \ttfamily Page {\thepage}/\pageref{LastPage}}
+\renewcommand{\headrulewidth}{0.3pt}
+\renewcommand{\footrulewidth}{0.3pt}
+
+
+
+%%%
+\setcounter{secnumdepth}{4}
+\setcounter{tocdepth}{3}
+\makeatletter
+\newcounter {subsubsubsection}[subsubsection]
+\newtcolorbox{mybox}[1]{colback=gray!20, colframe=blue, fonttitle=\ttfamily, title=#1,}
+\onehalfspacing
+\lstset{
+  language=C,
+  basicstyle=\footnotesize\ttfamily,
+  numbers=left,
+  numberstyle=\tiny,
+  numbersep=2pt,
+  tabsize=10,
+  extendedchars=true,
+  breaklines=true,
+  frame=none,
+  stringstyle=\color{blue}\ttfamily,
+  showspaces=false,
+  showtabs=false,
+  xleftmargin=13pt,
+  framexleftmargin=17pt,
+  framexrightmargin=15pt,
+  framexbottommargin=15pt,
+  commentstyle=\color{green},
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  showstringspaces=false,
+  morekeywords={abstract, event, new, struct, as, explicit, null, switch, base, extern, object, this, bool, false, operator, throw, break, finally, out, true, byte, fixed, override, try, case, float, params, typeof, catch, for, private, uint, char, foreach, protected, ulong, checked, goto, public, unchecked, class, if, readonly, unsafe, const, implicit, ref, ushort, continue, in, return, using, decimal, int, sbyte, virtual, default, interface, sealed, volatile, delegate, internal, short, void, do, is, sizeof, while, double, lock, stackalloc, else, long, static, mutate, enum, namespace, string, install.packages, library, head},
+  commentstyle=\color{red},
+  keywordstyle=\color{cyan}
+}
+
+\renewcommand\thesubsubsubsection{\thesubsubsection .\@alph\c@subsubsubsection}
+\newcommand\subsubsubsection{\@startsection{subsubsubsection}{4}{\z@}%
+	{-3.25ex\@plus -1ex \@minus -.2ex}%
+	{1.5ex \@plus .2ex}%
+	{\normalfont\normalsize\bfseries}}
+\newcommand*\l@subsubsubsection{\@dottedtocline{3}{10.0em}{4.1em}}
+\newcommand*{\subsubsubsectionmark}[1]{}
+\makeatother
+
+\begin{document}
+	
+	\begin{titlepage}
+		\begin{center}
+	ĐẠI HỌC QUỐC GIA THÀNH PHỐ HỒ CHÍ MINH \\
+	TRƯỜNG ĐẠI HỌC BÁCH KHOA THÀNH PHỐ HỒ CHÍ MINH \\
+	KHOA KHOA HỌC VÀ KỸ THUẬT MÁY TÍNH
+\end{center}
+
+		
+		\vspace{0.5cm}
+		
+		\begin{figure}[h!]
+			\begin{center}
+				\includegraphics[width=3.5cm]{hcmut.png}
+			\end{center}
+		\end{figure}
+		
+		\vspace{0.2cm}
+		
+		\begin{center}
+			\color{blue}
+			\begin{tabular}{c}
+				\multicolumn{1}{l}{\textbf{\centerline{{\LARGE HỌC MÁY}}}}\\
+				~~\\
+				\hline
+				\\
+				\multicolumn{1}{l}{\textbf{\centerline{{\LARGE Báo cáo bài tập lớn }}}}\\
+				\\
+				\textbf{{\LARGE Mô Hình Học Máy }}\\
+\\
+				\hline
+			\end{tabular}
+			\color{blue}
+		\end{center}
+		\vspace{0.5cm}
+		\begin{table}[h]
+			\color{blue}
+			\begin{tabular}{rrl}
+				\hspace{3 cm} & GVHD: & Huỳnh Văn Thống\\  
+                & Lớp: & L01\\ 
+				& Sinh viên 1: & Nguyễn Minh Tú - 2213848  \\
+                & Sinh viên 2: & Quách Khải Hào - 2210871 \\
+                & Sinh viên 3: & Tống Xuân Lộc - 2211934 \\
+                & Sinh viên 2: & Tạ Gia Bảo - 2110795 \\
+                               
+
+			\end{tabular}
+			\color{blue}
+		\end{table}
+	
+
+            \begin{center}
+			{\footnotesize\normalsize THÀNH PHỐ HỒ CHÍ MINH, THÁNG 11 NĂM 2025 }
+		\end{center}
+	\end{titlepage}
+
+	%\thispagestyle{empty}
+	\newpage
+        \renewcommand{\contentsname}{Mục Lục}
+	\tableofcontents
+	\newpage
+        \begin{center}
+        \section*{Danh sách thành viên \& Công việc}    
+        \end{center}
+
+\begin{center}
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|l|c|}
+\hline
+\textbf{STT} & \textbf{Họ và tên} & \textbf{MSSV} & \textbf{Công việc} & \textbf{\%} \\
+\hline 
+1 & Nguyễn Minh Tú & 2213848 & Tiền xử lí dữ liệu, Huấn luyện mô hình, viết báo cáo & 100\% \\
+\hline
+
+2 & Quách Khải Hào & 2210871 & Phân tích dữ liệu, Huấn luyện mô hình, viết báo cáo & 100\% \\
+\hline
+
+3 & Tống Xuân Lộc & 2211934 & Tiền xử lí dữ liệu, Huấn luyện mô hình, thiết kế slide & 100\% \\
+\hline
+
+4 & Tạ Gia Bảo & 2110795 & Phân tích dữ liệu, Huấn luyện mô hình, thiết kế slide & 100\% \\
+\hline
+
+
+\hline
+\end{tabular}
+\caption{Danh sách các thành viên và nhiệm vụ}
+\end{table}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%% Giới thiệu %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{src/gioithieu}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%% Phân tích dữ liệu%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{src/phantichdulieu}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%% Tiền xử lí dữ liệu%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\include{src/tienxulidulieu}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%% Các mô hình dự đoán%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{src/cacmohinhdudoan}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%  Kết quả và so sánh các mô hình%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\include{src/ketquasosanhcacmohinh}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%% Code và Bộ dữ liệu%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Code và Bộ dữ liệu}
+    \afterpage{
+    \section{Tài liệu tham khảo}
+    \renewcommand{\refname}{\vspace{-2.2em}}
+    \begin{thebibliography}{9}
+
+    \bibitem{overcrowded_curriculum}
+    Marcel F D’Eon (2023), The overcrowded curriculum is alarming. 
+    Retrieved from \url{https://pmc.ncbi.nlm.nih.gov/articles/PMC10500406/}
+
+   
+    
+    \end{thebibliography}
+    
+    }
+   
+\end{document}
+

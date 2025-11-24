@@ -8,9 +8,87 @@ from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.metrics import classification_report
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
+
+
+class LogisticRegression:
+    
+    def __init__(self, learning_rate=0.01, n_iterations=1000, regularization=None, C=1.0):
+        self.learning_rate = learning_rate
+        self.n_iterations = n_iterations
+        self.regularization = regularization
+        self.C = C
+        self.weights = None
+        self.bias = None
+        self.losses = []
+    
+    def _sigmoid(self, z):
+        z = np.clip(z, -500, 500)
+        return 1 / (1 + np.exp(-z))
+    
+    def _compute_loss(self, y_true, y_pred, weights):
+        m = len(y_true)
+        epsilon = 1e-15
+        y_pred = np.clip(y_pred, epsilon, 1 - epsilon)
+        loss = -np.mean(y_true * np.log(y_pred) + (1 - y_true) * np.log(1 - y_pred))
+        
+        if self.regularization == 'l2':
+            lambda_param = 1 / (2 * self.C * m)
+            l2_penalty = lambda_param * np.sum(weights ** 2)
+            loss += l2_penalty
+        
+        return loss
+    
+    def fit(self, X, y):
+        X = np.array(X)
+        y = np.array(y)
+        
+        n_samples, n_features = X.shape
+        self.weights = np.zeros(n_features)
+        self.bias = 0
+        
+        for i in range(self.n_iterations):
+            linear_model = np.dot(X, self.weights) + self.bias
+            y_predicted = self._sigmoid(linear_model)
+            
+            dw = (1 / n_samples) * np.dot(X.T, (y_predicted - y))
+            db = (1 / n_samples) * np.sum(y_predicted - y)
+            
+            if self.regularization == 'l2':
+                lambda_param = 1 / (self.C * n_samples)
+                dw += lambda_param * self.weights
+            
+            self.weights -= self.learning_rate * dw
+            self.bias -= self.learning_rate * db
+            
+            if i % 100 == 0:
+                loss = self._compute_loss(y, y_predicted, self.weights)
+                self.losses.append(loss)
+        
+        return self
+    
+    def predict_proba(self, X):
+        X = np.array(X)
+        linear_model = np.dot(X, self.weights) + self.bias
+        return self._sigmoid(linear_model)
+    
+    def predict(self, X):
+        probabilities = self.predict_proba(X)
+        return (probabilities >= 0.5).astype(int)
+    
+    def get_params(self, deep=True):
+        return {
+            'learning_rate': self.learning_rate,
+            'n_iterations': self.n_iterations,
+            'regularization': self.regularization,
+            'C': self.C
+        }
+    
+    def set_params(self, **params):
+        for key, value in params.items():
+            setattr(self, key, value)
+        return self
 pd.set_option('display.max_columns', None)
 # %matplotlib inline
 
@@ -223,12 +301,102 @@ models = {
 }
 
 # Huấn luyện mô hình và tinh chỉnh siêu tham số bằng GridSearchCV
-for name, model in models.items():
-    grid_search = GridSearchCV(model, param_grids[name], cv=5, scoring='accuracy')
-    grid_search.fit(X_train, y_train)
-    best_model = grid_search.best_estimator_
-    y_pred = best_model.predict(X_test)
-    report = classification_report(y_test, y_pred)
-    print(f'{name} – Báo cáo phân loại:\n{report}\nThông số tốt nhất: {grid_search.best_params_}\n')
+from sklearn.metrics import ConfusionMatrixDisplay
+from sklearn.metrics import accuracy_score, recall_score, confusion_matrix
+
+# Decision Tree
+dt_grid = GridSearchCV(DecisionTreeClassifier(), param_grids['Decision Tree'], cv=5, scoring='accuracy')
+dt_grid.fit(X_train, y_train)
+dt_best = dt_grid.best_estimator_
+dt_pred = dt_best.predict(X_test)
+dt_acc = accuracy_score(y_test, dt_pred)
+dt_cm = confusion_matrix(y_test, dt_pred)
+dt_recall = dt_cm[1,1] / (dt_cm[1,1] + dt_cm[1,0])
+dt_specificity = dt_cm[0,0] / (dt_cm[0,0] + dt_cm[0,1])
+print(f"Decision Tree: TP={dt_cm[1,1]}, TN={dt_cm[0,0]}, FP={dt_cm[0,1]}, FN={dt_cm[1,0]}")
+disp = ConfusionMatrixDisplay.from_estimator(dt_best, X_test, y_test)
+plt.title("Confusion Matrix - Decision Tree")
+plt.savefig("latex/assets/confusion_matrix_decisiontree.png", dpi=300, bbox_inches='tight')
+plt.close()
+
+# %%
+# KNN: accuracy theo từng K (1-15)
+knn_acc_list = []
+knn_k_list = list(range(1, 16))
+for k in knn_k_list:
+    knn = KNeighborsClassifier(n_neighbors=k)
+    knn.fit(X_train, y_train)
+    acc = knn.score(X_test, y_test)
+    knn_acc_list.append(acc)
+# K tối ưu
+knn_best_k = knn_k_list[np.argmax(knn_acc_list)]
+knn_best = KNeighborsClassifier(n_neighbors=knn_best_k)
+knn_best.fit(X_train, y_train)
+knn_pred = knn_best.predict(X_test)
+knn_cm = confusion_matrix(y_test, knn_pred)
+knn_acc = accuracy_score(y_test, knn_pred)
+knn_recall = knn_cm[1,1] / (knn_cm[1,1] + knn_cm[1,0])
+knn_specificity = knn_cm[0,0] / (knn_cm[0,0] + knn_cm[0,1])
+print(f"KNN (K={knn_best_k}): TP={knn_cm[1,1]}, TN={knn_cm[0,0]}, FP={knn_cm[0,1]}, FN={knn_cm[1,0]}")
+plt.plot(knn_k_list, knn_acc_list, marker='o')
+plt.xlabel('Số láng giềng K')
+plt.ylabel('Accuracy')
+plt.title('Độ chính xác KNN theo số lượng K')
+plt.savefig('latex/assets/knn_k_vs_accuracy.png', dpi=300, bbox_inches='tight')
+plt.close()
+
+# %%
+# Logistic Regression
+logreg_grid = GridSearchCV(LogisticRegression(), param_grids['Logistic Regression'], cv=5, scoring='accuracy')
+logreg_grid.fit(X_train, y_train)
+logreg_best = logreg_grid.best_estimator_
+logreg_pred = logreg_best.predict(X_test)
+logreg_acc = accuracy_score(y_test, logreg_pred)
+logreg_cm = confusion_matrix(y_test, logreg_pred)
+logreg_recall = logreg_cm[1,1] / (logreg_cm[1,1] + logreg_cm[1,0])
+logreg_specificity = logreg_cm[0,0] / (logreg_cm[0,0] + logreg_cm[0,1])
+print(f"Logistic Regression: TP={logreg_cm[1,1]}, TN={logreg_cm[0,0]}, FP={logreg_cm[0,1]}, FN={logreg_cm[1,0]}")
+coefs = logreg_best.weights
+features = X.columns
+plt.figure(figsize=(8,6))
+plt.barh(features, coefs)
+plt.xlabel('Hệ số hồi quy')
+plt.title('Hệ số hồi quy các biến độc lập')
+plt.tight_layout()
+plt.savefig('latex/assets/logreg_coefficients.png', dpi=300, bbox_inches='tight')
+plt.close()
+
+# %%
+# SVM: so sánh accuracy các kernel
+svm_acc_list = []
+svm_kernel_names = ['linear', 'rbf']
+svm_results = {}
+for kernel in svm_kernel_names:
+    svm = SVC(kernel=kernel, C=1, gamma='scale')
+    svm.fit(X_train, y_train)
+    pred = svm.predict(X_test)
+    acc = accuracy_score(y_test, pred)
+    cm = confusion_matrix(y_test, pred)
+    recall = cm[1,1] / (cm[1,1] + cm[1,0])
+    specificity = cm[0,0] / (cm[0,0] + cm[0,1])
+    print(f"SVM ({kernel}): TP={cm[1,1]}, TN={cm[0,0]}, FP={cm[0,1]}, FN={cm[1,0]}")
+    svm_acc_list.append(acc)
+    svm_results[kernel] = {'acc': acc, 'recall': recall, 'specificity': specificity}
+plt.bar(svm_kernel_names, svm_acc_list, color=['skyblue', 'orange'])
+plt.ylabel('Accuracy')
+plt.title('So sánh accuracy SVM với các kernel')
+plt.savefig('latex/assets/svm_kernel_compare.png', dpi=300, bbox_inches='tight')
+plt.close()
+
+# %%
+# Lưu số liệu ra file txt để đối chiếu
+with open('latex/assets/model_metrics.txt', 'w', encoding='utf-8') as f:
+    f.write(f"Decision Tree: accuracy={dt_acc:.3f}, recall={dt_recall:.3f}, specificity={dt_specificity:.3f}\n")
+    f.write(f"KNN (best k={knn_best_k}): accuracy={knn_acc:.3f}, recall={knn_recall:.3f}, specificity={knn_specificity:.3f}\n")
+    f.write(f"KNN acc list: {[round(a,3) for a in knn_acc_list]}\n")
+    f.write(f"Logistic Regression: accuracy={logreg_acc:.3f}, recall={logreg_recall:.3f}, specificity={logreg_specificity:.3f}\n")
+    for kernel in svm_kernel_names:
+        r = svm_results[kernel]
+        f.write(f"SVM ({kernel}): accuracy={r['acc']:.3f}, recall={r['recall']:.3f}, specificity={r['specificity']:.3f}\n")
 
 # %%

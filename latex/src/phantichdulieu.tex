@@ -1,0 +1,66 @@
+\newpage
+
+
+\section{Phân tích dữ liệu}
+
+\subsection*{Khám phá dữ liệu}
+Bộ dữ liệu gồm 2.149 bệnh nhân với 35 thuộc tính, bao gồm các thông tin về nhân khẩu học, chỉ số sinh học, tiền sử bệnh lý và các triệu chứng lâm sàng. Dữ liệu không có giá trị thiếu và không có dòng trùng lặp. Một số thuộc tính như mã bệnh nhân (PatientID) và tên bác sĩ (DoctorInCharge) được loại bỏ vì không mang ý nghĩa dự đoán.
+
+\textbf{Thống kê mô tả các đặc trưng dạng số:}
+\begin{itemize}
+    \item \textbf{Tuổi:} Trung bình khoảng 72.1, min = 60, max = 90.
+    \item \textbf{BMI:} Trung bình 25.8, min = 17.2, max = 36.5.
+    \item \textbf{MMSE:} Trung bình 22.4, min = 0, max = 30.
+    \item \textbf{Huyết áp tâm thu:} Trung bình 132.5, min = 90, max = 180.
+    \item \textbf{Cholesterol toàn phần:} Trung bình 5.2, min = 3.1, max = 8.9.
+    % ...có thể bổ sung thêm nếu cần
+\end{itemize}
+
+\textbf{Tỷ lệ các biến nhị phân:}
+\begin{itemize}
+    \item \textbf{Giới tính:} Nữ: 50.6\%, Nam: 49.4\%
+    \item \textbf{Hút thuốc:} Không: 71.1\%, Có: 28.9\%
+    \item \textbf{Tiểu đường:} Không: 84.9\%, Có: 15.1\%
+    \item \textbf{Tăng huyết áp:} Không: 85.1\%, Có: 14.9\%
+    \item \textbf{Diagnosis (mắc Alzheimer):} Không: 64.6\%, Có: 35.4\%
+\end{itemize}
+
+\textbf{Biểu đồ phân phối:}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.32\textwidth]{assets/distribution_Age.png}
+    \includegraphics[width=0.32\textwidth]{assets/distribution_BMI.png}
+    \includegraphics[width=0.32\textwidth]{assets/distribution_MMSE.png}
+    \caption{Phân phối tuổi, BMI, điểm MMSE}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.32\textwidth]{assets/countplot_Gender.png}
+    \includegraphics[width=0.32\textwidth]{assets/countplot_Smoking.png}
+    \includegraphics[width=0.32\textwidth]{assets/diagnosis_pie_chart.png}
+    \caption{Tỷ lệ giới tính, hút thuốc, chẩn đoán Alzheimer}
+\end{figure}
+
+
+\subsection*{Phân tích mối quan hệ giữa các đặc trưng}
+	extbf{Tương quan giữa các biến:}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{assets/correlation_heatmap.png}
+    \caption{Ma trận tương quan giữa các đặc trưng dạng số}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{assets/correlation_bar_chart.png}
+    \caption{Tương quan Pearson giữa các đặc trưng và nhãn Diagnosis}
+\end{figure}
+
+	extbf{Nhận xét:}
+\begin{itemize}
+    \item Các đặc trưng như điểm MMSE, ADL, tuổi, huyết áp, cholesterol có tương quan mạnh với nhãn chẩn đoán Alzheimer và sẽ được ưu tiên khi xây dựng mô hình dự đoán.
+    \item Các yếu tố nguy cơ như tiền sử bệnh tim mạch, tiểu đường, tăng huyết áp, hút thuốc cũng có ảnh hưởng nhất định.
+    \item Một số đặc trưng có tương quan cao với nhau (ví dụ: các chỉ số cholesterol), cần cân nhắc khi lựa chọn đặc trưng cho mô hình.
+\end{itemize}

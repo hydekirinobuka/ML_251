@@ -1,0 +1,41 @@
+
+\section{Các mô hình dự đoán}
+
+Nhóm sử dụng bốn thuật toán học máy phổ biến để giải quyết bài toán dự đoán nguy cơ mắc Alzheimer:
+\begin{itemize}
+    \item \textbf{Decision Tree (Cây quyết định)}
+    \item \textbf{K-Nearest Neighbors (KNN)}
+    \item \textbf{Logistic Regression (Hồi quy Logistic)}
+    \item \textbf{Support Vector Machine (SVM)}
+\end{itemize}
+
+\subsection*{Mô tả các mô hình}
+\begin{itemize}
+    \item \textbf{Decision Tree:} Mô hình phân loại dựa trên cấu trúc cây, dễ giải thích, cho phép xác định các đặc trưng quan trọng. Tham số chính: \texttt{max\_depth} (độ sâu tối đa của cây).
+    \item \textbf{KNN:} Phân loại dựa trên số lượng láng giềng gần nhất. Tham số chính: \texttt{n\_neighbors} (số láng giềng).
+    \item \textbf{Logistic Regression:} Mô hình tuyến tính cho bài toán phân loại nhị phân. Tham số chính: \texttt{C} (hệ số điều chỉnh regularization).
+    \item \textbf{SVM:} Tìm siêu phẳng phân tách tối ưu giữa hai lớp. Tham số chính: \texttt{C} (điều chỉnh regularization), \texttt{gamma} (tham số kernel).
+\end{itemize}
+
+\subsection*{Quy trình huấn luyện và đánh giá}
+\begin{enumerate}
+    \item Chia dữ liệu thành tập huấn luyện (80\%) và kiểm thử (20\%).
+    \item Sử dụng \textbf{GridSearchCV} để tìm bộ tham số tối ưu cho từng mô hình với 5-fold cross-validation.
+    \item Đánh giá mô hình trên tập kiểm thử bằng các chỉ số: accuracy, precision, recall, F1-score.
+    \item So sánh kết quả giữa các mô hình để chọn ra phương pháp phù hợp nhất.
+\end{enumerate}
+
+
+Kết quả chi tiết và so sánh hiệu quả các mô hình sẽ được trình bày ở phần tiếp theo.
+
+	extbf{Ví dụ code huấn luyện và đánh giá:}
+\begin{lstlisting}[language=Python]
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import classification_report
+
+param_grid = {'max_depth': [3, 5, 7, 12, None]}
+grid = GridSearchCV(DecisionTreeClassifier(), param_grid, cv=5, scoring='accuracy')
+grid.fit(X_train, y_train)
+y_pred = grid.best_estimator_.predict(X_test)
+print(classification_report(y_test, y_pred))
+\end{lstlisting}

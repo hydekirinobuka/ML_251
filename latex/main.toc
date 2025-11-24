@@ -1,0 +1,14 @@
+\contentsline {section}{\numberline {1}Giới thiệu bài toán và bộ dữ liệu}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Giới thiệu bộ dữ liệu}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Lựa chọn các mô hình học máy}{3}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Tổng quan phương pháp}{4}{section.2}%
+\contentsline {section}{\numberline {3}Phân tích dữ liệu}{5}{section.3}%
+\contentsline {section}{\numberline {4}Các mô hình dự đoán}{11}{section.4}%
+\contentsline {section}{\numberline {5}Kết quả và so sánh các mô hình}{13}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Decision Tree}{13}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}K-Nearest Neighbors (KNN)}{14}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Logistic Regression}{15}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Support Vector Machine (SVM)}{17}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}Tóm tắt kết quả và so sánh}{18}{subsection.5.5}%
+\contentsline {section}{\numberline {6}Code và Bộ dữ liệu}{20}{section.6}%
+\contentsline {section}{\numberline {7}Tài liệu tham khảo}{21}{section.7}%
