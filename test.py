@@ -425,10 +425,10 @@ print("TEST CHI TIẾT LOGISTIC REGRESSION VỚI CÁC CẤU HÌNH KHÁC NHAU")
 print("=" * 70)
 
 test_configs = [
-    {'learning_rate': 0.01, 'n_iterations': 1000, 'regularization': None, 'C': 1.0},
-    {'learning_rate': 0.01, 'n_iterations': 1000, 'regularization': 'l2', 'C': 0.1},
-    {'learning_rate': 0.01, 'n_iterations': 1000, 'regularization': 'l2', 'C': 1.0},
-    {'learning_rate': 0.01, 'n_iterations': 1000, 'regularization': 'l2', 'C': 10.0},
+    {'learning_rate': 0.01, 'n_iterations': 10000, 'regularization': None, 'C': 1.0},
+    {'learning_rate': 0.01, 'n_iterations': 10000, 'regularization': 'l2', 'C': 0.1},
+    {'learning_rate': 0.01, 'n_iterations': 10000, 'regularization': 'l2', 'C': 1.0},
+    {'learning_rate': 0.01, 'n_iterations': 10000, 'regularization': 'l2', 'C': 10.0},
 ]
 
 results = []
