@@ -302,6 +302,166 @@ models = {
     'Support Vector Machine': SVC(),
 }
 
+
+# %%
+# -------------------------------------------------------------
+# TEST CHI TIẾT LOGISTIC REGRESSION VỚI CÁC THAM SỐ KHÁC NHAU 
+# n_iterations = 1000
+# -------------------------------------------------------------
+
+
+print("\n" + "=" * 70)
+print("TEST CHI TIẾT LOGISTIC REGRESSION VỚI CÁC CẤU HÌNH KHÁC NHAU n_iterations = 1000")
+print("=" * 70)
+
+test_configs = [
+    {'learning_rate': 0.01, 'n_iterations': 1000, 'regularization': None, 'C': 1.0},
+    {'learning_rate': 0.01, 'n_iterations': 1000, 'regularization': 'l2', 'C': 0.1},
+    {'learning_rate': 0.01, 'n_iterations': 1000, 'regularization': 'l2', 'C': 1.0},
+    {'learning_rate': 0.01, 'n_iterations': 1000, 'regularization': 'l2', 'C': 10.0},
+]
+
+results = []
+
+for idx, config in enumerate(test_configs, 1):
+    print(f"\n{'-' * 70}")
+    print(f"Cấu hình {idx}:")
+    print(f"  learning_rate={config['learning_rate']}, n_iterations={config['n_iterations']}")
+    print(f"  regularization={config['regularization']}, C={config['C']}")
+    print(f"{'-' * 70}")
+    
+    # Huấn luyện mô hình
+    model = LogisticRegression(**config)
+    model.fit(X_train, y_train)
+    
+    # Dự đoán
+    y_pred = model.predict(X_test)
+    
+    # Đánh giá
+    accuracy = accuracy_score(y_test, y_pred)
+    cm = confusion_matrix(y_test, y_pred)
+    recall = cm[1,1] / (cm[1,1] + cm[1,0]) if (cm[1,1] + cm[1,0]) > 0 else 0
+    specificity = cm[0,0] / (cm[0,0] + cm[0,1]) if (cm[0,0] + cm[0,1]) > 0 else 0
+    
+    print(f"\nAccuracy: {accuracy:.4f}")
+    print(f"Recall (Sensitivity): {recall:.4f}")
+    print(f"Specificity: {specificity:.4f}")
+    
+    print("\nClassification Report:")
+    print(classification_report(y_test, y_pred))
+    
+    print("Confusion Matrix:")
+    print(cm)
+    print(f"TP={cm[1,1]}, TN={cm[0,0]}, FP={cm[0,1]}, FN={cm[1,0]}")
+    
+    # Hiển thị loss qua các iterations
+    print(f"\nLoss theo các iterations (5 giá trị cuối):")
+    for i, loss in enumerate(model.losses[-5:]):
+        iteration_num = (len(model.losses) - 5 + i) * 100
+        print(f"  Iteration {iteration_num}: Loss = {loss:.6f}")
+    
+    results.append({
+        'config': config,
+        'accuracy': accuracy,
+        'recall': recall,
+        'specificity': specificity,
+        'model': model
+    })
+
+# Tìm cấu hình tốt nhất
+best_result = max(results, key=lambda x: x['accuracy'])
+print("\n" + "=" * 70)
+print("KẾT QUẢ TỐT NHẤT")
+print("=" * 70)
+print(f"Cấu hình: {best_result['config']}")
+print(f"Accuracy: {best_result['accuracy']:.4f}")
+print(f"Recall: {best_result['recall']:.4f}")
+print(f"Specificity: {best_result['specificity']:.4f}")
+
+print("\n✓ Hoàn tất phân tích và đánh giá mô hình!")
+
+
+
+
+# %%
+# -------------------------------------------------------------
+# TEST CHI TIẾT LOGISTIC REGRESSION VỚI CÁC THAM SỐ KHÁC NHAU 
+# n_iterations = 10000
+# -------------------------------------------------------------
+
+
+print("\n" + "=" * 70)
+print("TEST CHI TIẾT LOGISTIC REGRESSION VỚI CÁC CẤU HÌNH KHÁC NHAU n_iterations = 10000")
+print("=" * 70)
+
+test_configs = [
+    {'learning_rate': 0.01, 'n_iterations': 10000, 'regularization': None, 'C': 1.0},
+    {'learning_rate': 0.01, 'n_iterations': 10000, 'regularization': 'l2', 'C': 0.1},
+    {'learning_rate': 0.01, 'n_iterations': 10000, 'regularization': 'l2', 'C': 1.0},
+    {'learning_rate': 0.01, 'n_iterations': 10000, 'regularization': 'l2', 'C': 10.0},
+]
+
+results = []
+
+for idx, config in enumerate(test_configs, 1):
+    print(f"\n{'-' * 70}")
+    print(f"Cấu hình {idx}:")
+    print(f"  learning_rate={config['learning_rate']}, n_iterations={config['n_iterations']}")
+    print(f"  regularization={config['regularization']}, C={config['C']}")
+    print(f"{'-' * 70}")
+    
+    # Huấn luyện mô hình
+    model = LogisticRegression(**config)
+    model.fit(X_train, y_train)
+    
+    # Dự đoán
+    y_pred = model.predict(X_test)
+    
+    # Đánh giá
+    accuracy = accuracy_score(y_test, y_pred)
+    cm = confusion_matrix(y_test, y_pred)
+    recall = cm[1,1] / (cm[1,1] + cm[1,0]) if (cm[1,1] + cm[1,0]) > 0 else 0
+    specificity = cm[0,0] / (cm[0,0] + cm[0,1]) if (cm[0,0] + cm[0,1]) > 0 else 0
+    
+    print(f"\nAccuracy: {accuracy:.4f}")
+    print(f"Recall (Sensitivity): {recall:.4f}")
+    print(f"Specificity: {specificity:.4f}")
+    
+    print("\nClassification Report:")
+    print(classification_report(y_test, y_pred))
+    
+    print("Confusion Matrix:")
+    print(cm)
+    print(f"TP={cm[1,1]}, TN={cm[0,0]}, FP={cm[0,1]}, FN={cm[1,0]}")
+    
+    # Hiển thị loss qua các iterations
+    print(f"\nLoss theo các iterations (5 giá trị cuối):")
+    for i, loss in enumerate(model.losses[-5:]):
+        iteration_num = (len(model.losses) - 5 + i) * 100
+        print(f"  Iteration {iteration_num}: Loss = {loss:.6f}")
+    
+    results.append({
+        'config': config,
+        'accuracy': accuracy,
+        'recall': recall,
+        'specificity': specificity,
+        'model': model
+    })
+
+# Tìm cấu hình tốt nhất
+best_result = max(results, key=lambda x: x['accuracy'])
+print("\n" + "=" * 70)
+print("KẾT QUẢ TỐT NHẤT")
+print("=" * 70)
+print(f"Cấu hình: {best_result['config']}")
+print(f"Accuracy: {best_result['accuracy']:.4f}")
+print(f"Recall: {best_result['recall']:.4f}")
+print(f"Specificity: {best_result['specificity']:.4f}")
+
+print("\n✓ Hoàn tất phân tích và đánh giá mô hình!")
+
+
+
 #%%
 # Huấn luyện mô hình và tinh chỉnh siêu tham số bằng GridSearchCV
 
@@ -414,79 +574,5 @@ for name, model in models.items():
 
 
 
-# %%
-# -------------------------------------------------------------
-# TEST CHI TIẾT LOGISTIC REGRESSION VỚI CÁC THAM SỐ KHÁC NHAU
-# -------------------------------------------------------------
 
-
-print("\n" + "=" * 70)
-print("TEST CHI TIẾT LOGISTIC REGRESSION VỚI CÁC CẤU HÌNH KHÁC NHAU")
-print("=" * 70)
-
-test_configs = [
-    {'learning_rate': 0.01, 'n_iterations': 10000, 'regularization': None, 'C': 1.0},
-    {'learning_rate': 0.01, 'n_iterations': 10000, 'regularization': 'l2', 'C': 0.1},
-    {'learning_rate': 0.01, 'n_iterations': 10000, 'regularization': 'l2', 'C': 1.0},
-    {'learning_rate': 0.01, 'n_iterations': 10000, 'regularization': 'l2', 'C': 10.0},
-]
-
-results = []
-
-for idx, config in enumerate(test_configs, 1):
-    print(f"\n{'-' * 70}")
-    print(f"Cấu hình {idx}:")
-    print(f"  learning_rate={config['learning_rate']}, n_iterations={config['n_iterations']}")
-    print(f"  regularization={config['regularization']}, C={config['C']}")
-    print(f"{'-' * 70}")
-    
-    # Huấn luyện mô hình
-    model = LogisticRegression(**config)
-    model.fit(X_train, y_train)
-    
-    # Dự đoán
-    y_pred = model.predict(X_test)
-    
-    # Đánh giá
-    accuracy = accuracy_score(y_test, y_pred)
-    cm = confusion_matrix(y_test, y_pred)
-    recall = cm[1,1] / (cm[1,1] + cm[1,0]) if (cm[1,1] + cm[1,0]) > 0 else 0
-    specificity = cm[0,0] / (cm[0,0] + cm[0,1]) if (cm[0,0] + cm[0,1]) > 0 else 0
-    
-    print(f"\nAccuracy: {accuracy:.4f}")
-    print(f"Recall (Sensitivity): {recall:.4f}")
-    print(f"Specificity: {specificity:.4f}")
-    
-    print("\nClassification Report:")
-    print(classification_report(y_test, y_pred))
-    
-    print("Confusion Matrix:")
-    print(cm)
-    print(f"TP={cm[1,1]}, TN={cm[0,0]}, FP={cm[0,1]}, FN={cm[1,0]}")
-    
-    # Hiển thị loss qua các iterations
-    print(f"\nLoss theo các iterations (5 giá trị cuối):")
-    for i, loss in enumerate(model.losses[-5:]):
-        iteration_num = (len(model.losses) - 5 + i) * 100
-        print(f"  Iteration {iteration_num}: Loss = {loss:.6f}")
-    
-    results.append({
-        'config': config,
-        'accuracy': accuracy,
-        'recall': recall,
-        'specificity': specificity,
-        'model': model
-    })
-
-# Tìm cấu hình tốt nhất
-best_result = max(results, key=lambda x: x['accuracy'])
-print("\n" + "=" * 70)
-print("KẾT QUẢ TỐT NHẤT")
-print("=" * 70)
-print(f"Cấu hình: {best_result['config']}")
-print(f"Accuracy: {best_result['accuracy']:.4f}")
-print(f"Recall: {best_result['recall']:.4f}")
-print(f"Specificity: {best_result['specificity']:.4f}")
-
-print("\n✓ Hoàn tất phân tích và đánh giá mô hình!")
 # %%

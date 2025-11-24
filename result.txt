@@ -1,4 +1,4 @@
-Decision Tree: accuracy=0.930, recall=0.869, specificity=0.964
+Decision Tree: accuracy=0.928, recall=0.869, specificity=0.960
 KNN (best k=15): accuracy=0.758, recall=0.444, specificity=0.931
 KNN acc list: [0.667, 0.695, 0.707, 0.728, 0.728, 0.714, 0.733, 0.712, 0.733, 0.74, 0.73, 0.723, 0.744, 0.747, 0.758]
 Logistic Regression: accuracy=0.786, recall=0.614, specificity=0.881
