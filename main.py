@@ -383,84 +383,6 @@ print("\n✓ Hoàn tất phân tích và đánh giá mô hình!")
 
 
 
-# %%
-# -------------------------------------------------------------
-# TEST CHI TIẾT LOGISTIC REGRESSION VỚI CÁC THAM SỐ KHÁC NHAU 
-# n_iterations = 10000
-# -------------------------------------------------------------
-
-
-print("\n" + "=" * 70)
-print("TEST CHI TIẾT LOGISTIC REGRESSION VỚI CÁC CẤU HÌNH KHÁC NHAU n_iterations = 10000")
-print("=" * 70)
-
-test_configs = [
-    {'learning_rate': 0.01, 'n_iterations': 10000, 'regularization': None, 'C': 1.0},
-    {'learning_rate': 0.01, 'n_iterations': 10000, 'regularization': 'l2', 'C': 0.1},
-    {'learning_rate': 0.01, 'n_iterations': 10000, 'regularization': 'l2', 'C': 1.0},
-    {'learning_rate': 0.01, 'n_iterations': 10000, 'regularization': 'l2', 'C': 10.0},
-]
-
-results = []
-
-for idx, config in enumerate(test_configs, 1):
-    print(f"\n{'-' * 70}")
-    print(f"Cấu hình {idx}:")
-    print(f"  learning_rate={config['learning_rate']}, n_iterations={config['n_iterations']}")
-    print(f"  regularization={config['regularization']}, C={config['C']}")
-    print(f"{'-' * 70}")
-    
-    # Huấn luyện mô hình
-    model = LogisticRegression(**config)
-    model.fit(X_train, y_train)
-    
-    # Dự đoán
-    y_pred = model.predict(X_test)
-    
-    # Đánh giá
-    accuracy = accuracy_score(y_test, y_pred)
-    cm = confusion_matrix(y_test, y_pred)
-    recall = cm[1,1] / (cm[1,1] + cm[1,0]) if (cm[1,1] + cm[1,0]) > 0 else 0
-    specificity = cm[0,0] / (cm[0,0] + cm[0,1]) if (cm[0,0] + cm[0,1]) > 0 else 0
-    
-    print(f"\nAccuracy: {accuracy:.4f}")
-    print(f"Recall (Sensitivity): {recall:.4f}")
-    print(f"Specificity: {specificity:.4f}")
-    
-    print("\nClassification Report:")
-    print(classification_report(y_test, y_pred))
-    
-    print("Confusion Matrix:")
-    print(cm)
-    print(f"TP={cm[1,1]}, TN={cm[0,0]}, FP={cm[0,1]}, FN={cm[1,0]}")
-    
-    # Hiển thị loss qua các iterations
-    print(f"\nLoss theo các iterations (5 giá trị cuối):")
-    for i, loss in enumerate(model.losses[-5:]):
-        iteration_num = (len(model.losses) - 5 + i) * 100
-        print(f"  Iteration {iteration_num}: Loss = {loss:.6f}")
-    
-    results.append({
-        'config': config,
-        'accuracy': accuracy,
-        'recall': recall,
-        'specificity': specificity,
-        'model': model
-    })
-
-# Tìm cấu hình tốt nhất
-best_result = max(results, key=lambda x: x['accuracy'])
-print("\n" + "=" * 70)
-print("KẾT QUẢ TỐT NHẤT")
-print("=" * 70)
-print(f"Cấu hình: {best_result['config']}")
-print(f"Accuracy: {best_result['accuracy']:.4f}")
-print(f"Recall: {best_result['recall']:.4f}")
-print(f"Specificity: {best_result['specificity']:.4f}")
-
-print("\n✓ Hoàn tất phân tích và đánh giá mô hình!")
-
-
 
 #%%
 # Huấn luyện mô hình và tinh chỉnh siêu tham số bằng GridSearchCV
@@ -478,7 +400,7 @@ dt_specificity = dt_cm[0,0] / (dt_cm[0,0] + dt_cm[0,1])
 print(f"Decision Tree: TP={dt_cm[1,1]}, TN={dt_cm[0,0]}, FP={dt_cm[0,1]}, FN={dt_cm[1,0]}")
 disp = ConfusionMatrixDisplay.from_estimator(dt_best, X_test, y_test)
 plt.title("Confusion Matrix - Decision Tree")
-plt.savefig("latex/assets/confusion_matrix_decisiontree.png", dpi=300, bbox_inches='tight')
+plt.savefig("assets/confusion_matrix_decisiontree.png", dpi=300, bbox_inches='tight')
 plt.close()
 
 
@@ -504,7 +426,7 @@ plt.plot(knn_k_list, knn_acc_list, marker='o')
 plt.xlabel('Số láng giềng K')
 plt.ylabel('Accuracy')
 plt.title('Độ chính xác KNN theo số lượng K')
-plt.savefig('latex/assets/knn_k_vs_accuracy.png', dpi=300, bbox_inches='tight')
+plt.savefig('assets/knn_k_vs_accuracy.png', dpi=300, bbox_inches='tight')
 plt.close()
 
 
@@ -525,7 +447,7 @@ plt.barh(features, coefs)
 plt.xlabel('Hệ số hồi quy')
 plt.title('Hệ số hồi quy các biến độc lập')
 plt.tight_layout()
-plt.savefig('latex/assets/logreg_coefficients.png', dpi=300, bbox_inches='tight')
+plt.savefig('assets/logreg_coefficients.png', dpi=300, bbox_inches='tight')
 plt.close()
 
 
@@ -547,7 +469,7 @@ for kernel in svm_kernel_names:
 plt.bar(svm_kernel_names, svm_acc_list, color=['skyblue', 'orange'])
 plt.ylabel('Accuracy')
 plt.title('So sánh accuracy SVM với các kernel')
-plt.savefig('latex/assets/svm_kernel_compare.png', dpi=300, bbox_inches='tight')
+plt.savefig('assets/svm_kernel_compare.png', dpi=300, bbox_inches='tight')
 plt.close()
 
 
@@ -562,6 +484,7 @@ with open('result.txt', 'w', encoding='utf-8') as f:
         f.write(f"SVM ({kernel}): accuracy={r['acc']:.3f}, recall={r['recall']:.3f}, specificity={r['specificity']:.3f}\n")
 
 
+
 # %%
 #fit models using GridSearchCV for hyperparameter tuning
 for name, model in models.items():
@@ -571,8 +494,4 @@ for name, model in models.items():
     y_pred = best_model.predict(X_test)
     report = classification_report(y_test, y_pred)
     print(f'{name} Classification Report:\n{report}\nBest Parameters: {grid_search.best_params_}\n')
-
-
-
-
 # %%
